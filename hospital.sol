@@ -63,4 +63,31 @@ contract PatientMedicalRecords {
         emit RecordCreated(rid, msg.sender, cid, block.timestamp);
         return rid;
     }
+
+    function authorizeProvider(uint256 recordId, address provider, bytes calldata encryptedKey)
+        external
+        recordExists(recordId)
+            {
+        require(msg.sender == records[recordId].creator, "Only patient can authorize provider");
+        providerEncryptedKeys[recordId][provider] = encryptedKey;
+        emit ProviderAuthorized(recordId, msg.sender, provider);
+        emit EncryptedKeyUpdated(recordId, provider);
+    }
+
+      function revokeProvider(uint256 recordId, address provider)
+        external
+        recordExists(recordId)
+    {
+        require(msg.sender == records[recordId].creator, "Only patient can revoke provider");
+        delete providerEncryptedKeys[recordId][provider];
+        emit ProviderRevoked(recordId, msg.sender, provider);
+    }
+
+     function getEncryptedKeyForCaller(uint256 recordId) external view recordExists(recordId) returns (bytes memory) {
+        return providerEncryptedKeys[recordId][msg.sender];
+    }
+
+
+
+
     }

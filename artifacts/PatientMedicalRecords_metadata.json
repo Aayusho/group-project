@@ -1,6 +1,6 @@
 {
 	"compiler": {
-		"version": "0.8.31-pre.1+commit.b59566f6"
+		"version": "0.8.30+commit.73712a01"
 	},
 	"language": "Solidity",
 	"output": {
@@ -127,6 +127,82 @@
 			{
 				"inputs": [
 					{
+						"internalType": "uint256",
+						"name": "recordId",
+						"type": "uint256"
+					},
+					{
+						"internalType": "address",
+						"name": "provider",
+						"type": "address"
+					},
+					{
+						"internalType": "bytes",
+						"name": "encryptedKey",
+						"type": "bytes"
+					}
+				],
+				"name": "authorizeProvider",
+				"outputs": [],
+				"stateMutability": "nonpayable",
+				"type": "function"
+			},
+			{
+				"inputs": [
+					{
+						"internalType": "string",
+						"name": "cid",
+						"type": "string"
+					},
+					{
+						"internalType": "bytes32",
+						"name": "contentHash",
+						"type": "bytes32"
+					},
+					{
+						"internalType": "address[]",
+						"name": "initialProviders",
+						"type": "address[]"
+					},
+					{
+						"internalType": "bytes[]",
+						"name": "encryptedKeys",
+						"type": "bytes[]"
+					}
+				],
+				"name": "createRecord",
+				"outputs": [
+					{
+						"internalType": "uint256",
+						"name": "",
+						"type": "uint256"
+					}
+				],
+				"stateMutability": "nonpayable",
+				"type": "function"
+			},
+			{
+				"inputs": [
+					{
+						"internalType": "uint256",
+						"name": "recordId",
+						"type": "uint256"
+					}
+				],
+				"name": "getEncryptedKeyForCaller",
+				"outputs": [
+					{
+						"internalType": "bytes",
+						"name": "",
+						"type": "bytes"
+					}
+				],
+				"stateMutability": "view",
+				"type": "function"
+			},
+			{
+				"inputs": [
+					{
 						"internalType": "address",
 						"name": "",
 						"type": "address"
@@ -215,6 +291,24 @@
 				],
 				"stateMutability": "view",
 				"type": "function"
+			},
+			{
+				"inputs": [
+					{
+						"internalType": "uint256",
+						"name": "recordId",
+						"type": "uint256"
+					},
+					{
+						"internalType": "address",
+						"name": "provider",
+						"type": "address"
+					}
+				],
+				"name": "revokeProvider",
+				"outputs": [],
+				"stateMutability": "nonpayable",
+				"type": "function"
 			}
 		],
 		"devdoc": {
@@ -245,11 +339,11 @@
 	},
 	"sources": {
 		"hospital.sol": {
-			"keccak256": "0x2f4464bb3ebd2b113c3000805dfc7ab93018eb30f0a4598b23b7ef5306a3ff00",
+			"keccak256": "0x71ec3d8048e835bc27eedc9018147ceb520332f053221df9fa01c027cd361e05",
 			"license": "MIT",
 			"urls": [
-				"bzz-raw://f40ed867e3f1fe8d2e16aaacd28b4f3a45c5f17b2e06d3e01e7eaabb0cbcc5ac",
-				"dweb:/ipfs/QmZi5nARuqaVjobBCm9UmT4LLJVk7wpBG5R5cPbiZ75gN6"
+				"bzz-raw://67ee6c797ff5e651c758320b7d50f5b1ba3882302f02046c00610a2f3f28d418",
+				"dweb:/ipfs/QmZ94vnYjFSZjg9DjdnVMgxr7aebEsi35UUbGWBqJNcfGA"
 			]
 		}
 	},
