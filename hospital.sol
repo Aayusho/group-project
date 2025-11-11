@@ -24,10 +24,43 @@ contract PatientMedicalRecords {
     event ProviderRevoked(uint256 indexed recordId, address indexed patient, address indexed provider);
     event RecordDeleted(uint256 indexed recordId, address indexed patient);
     event EncryptedKeyUpdated(uint256 indexed recordId, address indexed provider);
-    
+
     modifier recordExists(uint256 recordId) {
         require(records[recordId].exists, "Record does not exist");
         _;
     }
 
-}
+        function createRecord(
+        string calldata cid,
+        bytes32 contentHash,
+        address[] calldata initialProviders,
+        bytes[] calldata encryptedKeys
+    ) external returns (uint256) {
+        require(initialProviders.length == encryptedKeys.length, "Providers & keys length mismatch");
+
+        _recordCounter += 1;
+        uint256 rid = _recordCounter;
+
+        records[rid] = Record({
+            id: rid,
+            cid: cid,
+            contentHash: contentHash,
+            timestamp: block.timestamp,
+            creator: msg.sender,
+            exists: true
+        });
+
+     
+            // store encrypted keys for each initial provider
+        for (uint i = 0; i < initialProviders.length; i++) {
+            providerEncryptedKeys[rid][initialProviders[i]] = encryptedKeys[i];
+            emit EncryptedKeyUpdated(rid, initialProviders[i]);
+            emit ProviderAuthorized(rid, msg.sender, initialProviders[i]);
+        }
+
+        patientRecords[msg.sender].push(rid);
+
+        emit RecordCreated(rid, msg.sender, cid, block.timestamp);
+        return rid;
+    }
+    }
