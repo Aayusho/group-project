@@ -101,7 +101,14 @@ contract PatientMedicalRecords {
         records[recordId].exists = false;
         emit RecordDeleted(recordId, msg.sender);
     }
-    
+
+     function recoverSigner(bytes32 messageHash, uint8 v, bytes32 r, bytes32 s) public pure returns (address) {
+        return ecrecover(messageHash, v, r, s);
+    }
+
+      function getPatientRecordIds(address patient) external view returns (uint256[] memory) {
+        return patientRecords[patient];
+    }
 
 
     }
