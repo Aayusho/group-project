@@ -86,8 +86,22 @@ contract PatientMedicalRecords {
      function getEncryptedKeyForCaller(uint256 recordId) external view recordExists(recordId) returns (bytes memory) {
         return providerEncryptedKeys[recordId][msg.sender];
     }
-
-
+    function getRecordMetadata(uint256 recordId)
+        external
+        view
+        recordExists(recordId)
+        returns (string memory cid, bytes32 contentHash, uint256 timestamp, address creator)
+    {
+        Record storage r = records[recordId];
+        return (r.cid, r.contentHash, r.timestamp, r.creator);
+    }
+     function deleteRecord(uint256 recordId) external recordExists(recordId) {
+        require(msg.sender == records[recordId].creator, "Only patient can delete record");
+        // mark as non-existent while keeping stored data for audit (soft delete)
+        records[recordId].exists = false;
+        emit RecordDeleted(recordId, msg.sender);
+    }
+    
 
 
     }
