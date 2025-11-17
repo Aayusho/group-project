@@ -17,12 +17,17 @@ contract PatientMedicalRecords {
         bool exists;
 
     }
+    // For each record, store mapping provider => encrypted symmetric key (bytes) 
+    // providerEncryptedKeys[recordId][provider] = encryptedSymKey
 
     mapping(uint256 => mapping(address => bytes)) public providerEncryptedKeys;
-
+     // recordId => Record
     mapping(uint256 => Record) public records;
+     // patient address => list of record IDs owned by patient
     mapping(address => uint256[]) public patientRecords;
+    // small counter for record IDs
     uint256 private _recordCounter;
+    // Events for audit trail
 
     event RecordCreated(uint256 indexed recordId, address indexed patient, string cid, uint256 timestamp);
     event ProviderAuthorized(uint256 indexed recordId, address indexed patient, address indexed provider);
@@ -30,10 +35,17 @@ contract PatientMedicalRecords {
     event RecordDeleted(uint256 indexed recordId, address indexed patient);
     event EncryptedKeyUpdated(uint256 indexed recordId, address indexed provider);
 
+    // Modifiers
+
     modifier recordExists(uint256 recordId) {
         require(records[recordId].exists, "Record does not exist");
         _;
     }
+    /// Create a new medical record metadata entry
+    /// @param cid IPFS CID or off-chain reference (e.g., "ipfs://Qm...") 
+    /// @param contentHash keccak256 hash of the encrypted file bytes (for integrity checks) 
+    /// @param initialProviders array of providers to authorize initially 
+    /// @param encryptedKeys array of encrypted symmetric keys corresponding to initialProviders
 
         function createRecord(
         string calldata cid,
@@ -68,6 +80,10 @@ contract PatientMedicalRecords {
         emit RecordCreated(rid, msg.sender, cid, block.timestamp);
         return rid;
     }
+       /// Patient authorizes a provider by setting an encrypted symmetric key for that provider 
+       /// @param recordId record to authorize 
+       /// @param provider provider address to authorize 
+       /// @param encryptedKey symmetric key encrypted with provider's public key (bytes)
 
     function authorizeProvider(uint256 recordId, address provider, bytes calldata encryptedKey)
         external
@@ -78,6 +94,9 @@ contract PatientMedicalRecords {
         emit ProviderAuthorized(recordId, msg.sender, provider);
         emit EncryptedKeyUpdated(recordId, provider);
     }
+       /// Patient revokes provider access 
+       /// @param recordId record to revoke 
+       /// @param provider provider address to revoke
 
       function revokeProvider(uint256 recordId, address provider)
         external
