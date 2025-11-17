@@ -1,14 +1,19 @@
 // SPDX-License-Identifier: MIT
+
 pragma solidity ^0.8.19;
+
+/// @title PatientMedicalRecords - patient-controlled medical records registry
+/// @notice Stores metadata (IPFS CIDs / content hashes) and per-provider encrypted symmetric keys. 
+/// @dev Sensitive content is NOT stored on-chain. Uses events for auditable actions.
 
 contract PatientMedicalRecords {
 
     struct Record {
         uint256 id;
-        string cid;                    
-        bytes32 contentHash;          
+        string cid;                     //IPFS CID other off-chain             
+        bytes32 contentHash;            //keccak256 of the encrypted file (integrity)      
         uint256 timestamp;
-        address creator;               // patient address who created the record
+        address creator;               //patient address who created the record
         bool exists;
 
     }
