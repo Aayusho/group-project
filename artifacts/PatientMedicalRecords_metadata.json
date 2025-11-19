@@ -189,12 +189,78 @@
 						"type": "uint256"
 					}
 				],
+				"name": "deleteRecord",
+				"outputs": [],
+				"stateMutability": "nonpayable",
+				"type": "function"
+			},
+			{
+				"inputs": [
+					{
+						"internalType": "uint256",
+						"name": "recordId",
+						"type": "uint256"
+					}
+				],
 				"name": "getEncryptedKeyForCaller",
 				"outputs": [
 					{
 						"internalType": "bytes",
 						"name": "",
 						"type": "bytes"
+					}
+				],
+				"stateMutability": "view",
+				"type": "function"
+			},
+			{
+				"inputs": [
+					{
+						"internalType": "address",
+						"name": "patient",
+						"type": "address"
+					}
+				],
+				"name": "getPatientRecordIds",
+				"outputs": [
+					{
+						"internalType": "uint256[]",
+						"name": "",
+						"type": "uint256[]"
+					}
+				],
+				"stateMutability": "view",
+				"type": "function"
+			},
+			{
+				"inputs": [
+					{
+						"internalType": "uint256",
+						"name": "recordId",
+						"type": "uint256"
+					}
+				],
+				"name": "getRecordMetadata",
+				"outputs": [
+					{
+						"internalType": "string",
+						"name": "cid",
+						"type": "string"
+					},
+					{
+						"internalType": "bytes32",
+						"name": "contentHash",
+						"type": "bytes32"
+					},
+					{
+						"internalType": "uint256",
+						"name": "timestamp",
+						"type": "uint256"
+					},
+					{
+						"internalType": "address",
+						"name": "creator",
+						"type": "address"
 					}
 				],
 				"stateMutability": "view",
@@ -295,6 +361,40 @@
 			{
 				"inputs": [
 					{
+						"internalType": "bytes32",
+						"name": "messageHash",
+						"type": "bytes32"
+					},
+					{
+						"internalType": "uint8",
+						"name": "v",
+						"type": "uint8"
+					},
+					{
+						"internalType": "bytes32",
+						"name": "r",
+						"type": "bytes32"
+					},
+					{
+						"internalType": "bytes32",
+						"name": "s",
+						"type": "bytes32"
+					}
+				],
+				"name": "recoverSigner",
+				"outputs": [
+					{
+						"internalType": "address",
+						"name": "",
+						"type": "address"
+					}
+				],
+				"stateMutability": "pure",
+				"type": "function"
+			},
+			{
+				"inputs": [
+					{
 						"internalType": "uint256",
 						"name": "recordId",
 						"type": "uint256"
@@ -312,13 +412,48 @@
 			}
 		],
 		"devdoc": {
+			"details": "Sensitive content is NOT stored on-chain. Uses events for auditable actions.",
 			"kind": "dev",
-			"methods": {},
+			"methods": {
+				"authorizeProvider(uint256,address,bytes)": {
+					"params": {
+						"encryptedKey": "symmetric key encrypted with provider's public key (bytes)",
+						"provider": "provider address to authorize ",
+						"recordId": "record to authorize "
+					}
+				},
+				"createRecord(string,bytes32,address[],bytes[])": {
+					"params": {
+						"cid": "IPFS CID or off-chain reference (e.g., \"ipfs://Qm...\") ",
+						"contentHash": "keccak256 hash of the encrypted file bytes (for integrity checks) ",
+						"encryptedKeys": "array of encrypted symmetric keys corresponding to initialProviders",
+						"initialProviders": "array of providers to authorize initially "
+					}
+				},
+				"revokeProvider(uint256,address)": {
+					"params": {
+						"provider": "provider address to revoke",
+						"recordId": "record to revoke "
+					}
+				}
+			},
+			"title": "PatientMedicalRecords - patient-controlled medical records registry",
 			"version": 1
 		},
 		"userdoc": {
 			"kind": "user",
-			"methods": {},
+			"methods": {
+				"authorizeProvider(uint256,address,bytes)": {
+					"notice": "Patient authorizes a provider by setting an encrypted symmetric key for that provider "
+				},
+				"createRecord(string,bytes32,address[],bytes[])": {
+					"notice": "Create a new medical record metadata entry"
+				},
+				"revokeProvider(uint256,address)": {
+					"notice": "Patient revokes provider access "
+				}
+			},
+			"notice": "Stores metadata (IPFS CIDs / content hashes) and per-provider encrypted symmetric keys. ",
 			"version": 1
 		}
 	},
@@ -339,11 +474,11 @@
 	},
 	"sources": {
 		"hospital.sol": {
-			"keccak256": "0x71ec3d8048e835bc27eedc9018147ceb520332f053221df9fa01c027cd361e05",
+			"keccak256": "0xf2362314a848b7b655ea428ec73996bf021bf1d5dd87865eccf67e249430446e",
 			"license": "MIT",
 			"urls": [
-				"bzz-raw://67ee6c797ff5e651c758320b7d50f5b1ba3882302f02046c00610a2f3f28d418",
-				"dweb:/ipfs/QmZ94vnYjFSZjg9DjdnVMgxr7aebEsi35UUbGWBqJNcfGA"
+				"bzz-raw://b052c4b838ec332d1e39a3b3e5c910b27446071e84e1b63827fdef2b67c2b7be",
+				"dweb:/ipfs/QmQAA8KBViSfcX2Kts82zZwJWhFgvobe17xqzfA2FXQP2m"
 			]
 		}
 	},

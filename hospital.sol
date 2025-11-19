@@ -107,9 +107,22 @@ contract PatientMedicalRecords {
         emit ProviderRevoked(recordId, msg.sender, provider);
     }
 
-     function getEncryptedKeyForCaller(uint256 recordId) external view recordExists(recordId) returns (bytes memory) {
+       // Returns the encrypted key for the caller tied to a specific record.
+    // Only the caller’s own encrypted key is returned.
+    function getEncryptedKeyForCaller(uint256 recordId)
+        external
+        view
+        recordExists(recordId)
+        returns (bytes memory)
+    {
         return providerEncryptedKeys[recordId][msg.sender];
     }
+
+    // Returns metadata for a given medical record:
+    // - cid: IPFS or storage identifier
+    // - contentHash: hash of the record content for integrity verification
+    // - timestamp: when the record was created
+    // - creator: address that originally created the record
     function getRecordMetadata(uint256 recordId)
         external
         view
@@ -119,20 +132,31 @@ contract PatientMedicalRecords {
         Record storage r = records[recordId];
         return (r.cid, r.contentHash, r.timestamp, r.creator);
     }
-     function deleteRecord(uint256 recordId) external recordExists(recordId) {
+
+    // Soft-deletes a record. Only the creator (patient) can delete it.
+    // The record data remains stored for auditability, but `exists` is set to false.
+    function deleteRecord(uint256 recordId) external recordExists(recordId) {
         require(msg.sender == records[recordId].creator, "Only patient can delete record");
-        // mark as non-existent while keeping stored data for audit (soft delete)
+        
+        // Mark record as no longer existing
         records[recordId].exists = false;
+
         emit RecordDeleted(recordId, msg.sender);
     }
 
-     function recoverSigner(bytes32 messageHash, uint8 v, bytes32 r, bytes32 s) public pure returns (address) {
+    // Recovers the signer address from a hashed message and ECDSA signature.
+    // Useful for verifying off-chain signatures.
+    function recoverSigner(bytes32 messageHash, uint8 v, bytes32 r, bytes32 s)
+        public
+        pure
+        returns (address)
+    {
         return ecrecover(messageHash, v, r, s);
     }
 
-      function getPatientRecordIds(address patient) external view returns (uint256[] memory) {
+    // Returns all record IDs associated with a patient.
+    // Helpful for listing a patient’s stored medical records.
+    function getPatientRecordIds(address patient) external view returns (uint256[] memory) {
         return patientRecords[patient];
     }
-
-
-    }
+}
